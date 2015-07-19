@@ -47,18 +47,20 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         initialize();
 
     }
 
+    // initialisierungsmethode
     private void initialize() {
+        //shared Preferences erstellen
         myPrefs = getPreferences(MODE_PRIVATE);
         myEditor = myPrefs.edit();
-        topLayout = (LinearLayout) findViewById(R.id.linearMain);
 
+        // erstes Layout mit nur einem Button
+        topLayout = (LinearLayout) findViewById(R.id.linearMain);
         // Layout des Buttons parameter dafür
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
@@ -69,13 +71,16 @@ public class MainActivity extends Activity {
         final String noentry = myPrefs.getString(PREF_ERROR, "ERROR");
         String code = new String();
 
+        //falls die preferenzen keinen code enthalten soll dies ausgeführt werden
         if (!myPrefs.contains(PREF_CODE)) {
 
+            //Button eigenschaften festlegen
             final Button btn = new Button(this);
-            btn.setId(1);
+            btn.setId(156);
             btn.setText("new Codestore");
             btn.setLayoutParams(params);
 
+            //OnClickListener einrichten
             btn.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -86,6 +91,8 @@ public class MainActivity extends Activity {
 
                 }
             });
+
+            //Button auf dem Toplayout einfügen
             linlay.addView(btn);
             topLayout.addView(linlay);
         } else {
@@ -93,6 +100,7 @@ public class MainActivity extends Activity {
         }
     }
 
+    // Methode um den Codestore anzuzeigen
     protected void displayCodeStore(String data) {
 
         topLayout = (LinearLayout) findViewById(R.id.linearMain);
@@ -102,13 +110,15 @@ public class MainActivity extends Activity {
         txt_eingabe.setSingleLine(false);
         txt_eingabe.setHorizontalScrollBarEnabled(false);
         txt_eingabe.setMinLines(3);
-        txt_eingabe.setGravity(Gravity.TOP | Gravity.LEFT);
+        txt_eingabe.setGravity(Gravity.TOP | Gravity.START);
 
         // funktionieren nicht wirklich
         txt_eingabe.setVerticalScrollBarEnabled(true);
         txt_eingabe.setMovementMethod(new ScrollingMovementMethod());
+
         topLayout.addView(txt_eingabe);
 
+        //Buttons überlagern und inflaten
         LinearLayout myButtons = (LinearLayout) getLayoutInflater().inflate(
                 R.layout.del_save, null);
         topLayout.addView(myButtons);
@@ -123,7 +133,6 @@ public class MainActivity extends Activity {
                 e.printStackTrace();
             }
         }
-
     }
 
     private void buttoninit(EditText txt_eingabe) {
@@ -201,6 +210,8 @@ public class MainActivity extends Activity {
 
     /*
      * Methode die den Pin erstellt, und falls er zu kurz ist erneut aufruft
+     * nutzt Shared Preferences
+     *
      */
     private void pincreate() {
         myPrefs = getPreferences(MODE_PRIVATE);
@@ -228,6 +239,7 @@ public class MainActivity extends Activity {
                     String code = myPrefs.getString(PREF_CODE, null);
                     displayCodeStore(code);
 
+                    // Encryption des Textes ist bereits eingebaut
                     try {
                         EncryptDecrypt encryptor = new EncryptDecrypt(pinstr);
                         //encryptor.encrypt(code);
